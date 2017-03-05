@@ -1,0 +1,75 @@
+apply plugin: 'java'
+apply plugin: 'scala'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+
+group = 'com.example.rest'
+version = '1.0-SNAPSHOT'
+
+description = """jee-tomcat"""
+
+def javaVersion = 1.8
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+repositories {
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+//    compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-grizzly2-http', version:'2.17'
+//    compile group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version:'2.17'
+//	compile group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version:'2.17'
+//	compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-scala_2.11', version: '2.8.6' 
+    compile "org.scala-lang:scala-library:2.11.8"
+    
+ //   compile group: "org.glassfish.grizzly", name: "grizzly-websockets", version: "2.3.29"
+  //  compile group: "org.glassfish.grizzly", name: "grizzly-http-servlet", version: "2.3.29"
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+    
+    
+    testCompile group: 'junit', name: 'junit', version:'4.12'
+   // testCompile 'org.glassfish.jersey.media:jersey-media-json:2.0-m05-1'
+	compile 'org.apache.tomcat.embed:tomcat-embed-core:8.0.28'
+	compile 'org.apache.tomcat.embed:tomcat-embed-logging-juli:8.0.28'
+}
+
+def distDir = "${buildDir}/dist"
+
+task createDistDirectory(dependsOn: 'build') {
+	doLast {
+		println	"Creating $distDir"
+		new File(distDir).mkdirs()
+	}
+}
+
+task copyDependenciesToDist(type: Copy, dependsOn: 'createDistDirectory') {
+	into distDir
+	from configurations.runtime  
+}
+
+task writeLauncherScript(dependsOn: 'createDistDirectory') {
+	doLast {
+		def bat = new File(distDir, "${project.name}.bat")
+	    def files = configurations.runtime.getFiles().collect { f -> f.name }
+	    def separator = System.getProperty("path.separator")
+	    bat.write("java -classpath " + files.inject { acc, curr -> acc + separator + curr } + "${separator}${project.name}-${project.version}.jar com.example.rest.Main\n")
+	}
+}
+
+task copyArtifactToDist(type: Copy, dependsOn: 'createDistDirectory') {
+	def artifact = "${buildDir}/libs/${project.name}-${project.version}.jar"
+    from artifact
+    into distDir
+}
+
+task copyStaticAssetsToDist(type: Copy, dependsOn: 'createDistDirectory') {
+    from "static"
+    into "${distDir}/static"
+}
+
+task dist(dependsOn: ['copyArtifactToDist', 'copyDependenciesToDist', 'copyStaticAssetsToDist', 'writeLauncherScript'])
+clean.dependsOn cleanCopyStaticAssetsToDist, cleanCopyArtifactToDist, cleanCopyDependenciesToDist
