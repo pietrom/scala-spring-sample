@@ -32,7 +32,6 @@ object Main extends App {
   staticContentServlet.addInitParameter("debug", "1")
   staticContentServlet.addInitParameter("listings", "true")
   staticContentServlet.setLoadOnStartup(1)
-  //ctx.addChild(staticContentServlet)
   ctx.addServletMapping("/", "staticContentServlet")
   
   tomcat.start()
