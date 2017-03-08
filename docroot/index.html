@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>JEE Spike</title>
+<script type="text/javascript">
+	const app = {}
+	
+	function pageReady() { 
+		var evtSource = new EventSource('/api/hello/events', { withCredentials: false });
+		var eventList = document.querySelector('ul');
+		var socketEventList = document.querySelector('ol');
+		
+		evtSource.onopen = function(e) {
+		    console.log("Connection to server opened.", e);
+		};
+
+		evtSource.onmessage = function(e) {
+			console.log('RECEIVED', e);
+			var newElement = document.createElement("li");
+			newElement.textContent = "message: " + e.data;
+			eventList.appendChild(newElement);
+		};
+		
+		evtSource.onerror = function(e) {
+			console.log('ERROR', e, e.target.readyState)
+			evtSource.close();
+		};
+		
+		const socket = new WebSocket('ws://localhost:2205/api/chat');
+		socket.addEventListener('open', function (event) {
+		    socket.send('Hello Server!');
+		});
+
+		// Listen for messages
+		socket.addEventListener('message', function (event) {
+		    console.log('Message from server', event.data);
+		    var newElement = document.createElement("li");
+			newElement.textContent = "message: " + event.data;
+			socketEventList.appendChild(newElement);
+		});
+		
+		app.send = function() {
+			socket.send(document.getElementById('text').value);
+		}
+	}	
+	</script>
+</head>
+<body onload="pageReady()">
+	<h1>Hello, JEE World!</h1>
+	<p>
+		From application <code>docroot</code>...
+	</p>
+	<ul></ul>
+	<input type="text" id="text" value="" />
+	<input type="button" id="button" value="Send" onclick="app.send()" />
+	<ol></ol>
+</body>
+</html>
