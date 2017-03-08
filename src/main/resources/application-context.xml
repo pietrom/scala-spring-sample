@@ -8,4 +8,6 @@
     http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc.xsd"
     default-lazy-init="true">
+    
+    <bean class="com.darwinsw.jee.sample.InMemoryCyclistRepository" />
 </beans>

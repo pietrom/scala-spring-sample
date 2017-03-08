@@ -1,8 +1,5 @@
 package com.darwinsw.jee.sample
 
-import org.springframework.stereotype.Component
-
-@Component
 class InMemoryCyclistRepository extends CyclistRepository {
   override def getAll: List[Cyclist] = InMemoryCyclistRepository.cyclists
 }
