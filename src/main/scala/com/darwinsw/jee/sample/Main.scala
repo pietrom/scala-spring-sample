@@ -28,16 +28,6 @@ object Main extends App {
   apiServlet.setAsyncSupported(true)
   ctx.addServletMapping("/api/*", "api")
   
-  /*
-   * Wrapper defaultServlet = rootContext.createWrapper();  
-defaultServlet.setName("default");  
-defaultServlet.setServletClass("org.apache.catalina.servlets.DefaultServlet");  
-defaultServlet.addInitParameter("debug", "0");  
-defaultServlet.addInitParameter("listings", "false");  
-defaultServlet.setLoadOnStartup(1);  
-rootContext.addChild(defaultServlet);  
-rootContext.addServletMapping("/", "default");
-   * */
   val staticContentServlet = Tomcat.addServlet(ctx, "staticContentServlet", "org.apache.catalina.servlets.DefaultServlet")
   staticContentServlet.addInitParameter("debug", "1")
   staticContentServlet.addInitParameter("listings", "true")
