@@ -8,6 +8,6 @@ class InMemoryCyclistRepository extends CyclistRepository {
 }
 
 object InMemoryCyclistRepository {
-  val cyclists = List(new Cyclist("Fausto", "Coppi"), new Cyclist("Eddy", "Merckx"),
-      new Cyclist("Miguel", "Indurain"), new Cyclist("Alberto", "Contador"))
+  val cyclists = List(Cyclist("Fausto", "Coppi"), Cyclist("Eddy", "Merckx"),
+      Cyclist("Miguel", "Indurain"), Cyclist("Alberto", "Contador"))
 }
