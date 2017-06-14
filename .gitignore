@@ -4,3 +4,5 @@ bin
 .classpath
 .settings
 .cache-main
+docroot/dist
+node_modules
